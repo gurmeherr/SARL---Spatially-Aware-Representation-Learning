@@ -34,3 +34,10 @@ Given an input image `x`, two augmented views are generated:
 ```text
 x1 = t(x)
 x2 = t'(x)
+
+These are passed through an online branch and a target branch.
+
+x1, x2
+  ↓
+Online encoder fθ + projector gθ + predictor qθ
+Target encoder fξ + projector gξ
