@@ -41,3 +41,26 @@ x1, x2
   ↓
 Online encoder fθ + projector gθ + predictor qθ
 Target encoder fξ + projector gξ
+
+The target branch is updated using exponential moving average:
+
+ξ ← μξ + (1 - μ)θ
+
+The final SARL objective is:
+
+L_SARL = L_global + λ_SAL L_SAL + λ_PPDA L_PPDA + λ_RAM L_RAM
+```
+
+
+## Spatial Objectives
+
+**1. SAL: Saliency Alignment**
+SAL answers the question: Where should the model look?
+
+It encourages the model to focus on the same salient physical regions across augmented views.
+
+For each intermediate feature map, a saliency map is computed as the channel-wise absolute activation sum:
+```
+S(x) = Σc |F_c(x)|
+```
+The saliency maps are L2-normalized and compared across the valid overlapping regions of the two augmented views. In this implementation, crop and horizontal flip metadata are tracked so that cross-view spatial correspondence can be estimated.
