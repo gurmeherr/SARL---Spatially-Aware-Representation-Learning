@@ -55,6 +55,7 @@ L_SARL = L_global + λ_SAL L_SAL + λ_PPDA L_PPDA + λ_RAM L_RAM
 ## Spatial Objectives
 
 **1. SAL: Saliency Alignment**
+
 SAL answers the question: Where should the model look?
 
 It encourages the model to focus on the same salient physical regions across augmented views.
@@ -64,3 +65,21 @@ For each intermediate feature map, a saliency map is computed as the channel-wis
 S(x) = Σc |F_c(x)|
 ```
 The saliency maps are L2-normalized and compared across the valid overlapping regions of the two augmented views. In this implementation, crop and horizontal flip metadata are tracked so that cross-view spatial correspondence can be estimated.
+
+**2. PPDA: Patch-Prototype Distribution Alignment**
+
+PPDA answers the question: What parts are present?
+
+It encourages both augmented views to contain the same semantic mixture of local parts.
+
+The Layer 3 feature map is pooled into a 7 × 7 grid. Each patch is softly assigned to one of K = 32 prototype vectors using cosine similarity and a temperature-scaled softmax.
+
+The patch assignments are averaged into an image-level prototype distribution, and the online and target distributions are aligned using symmetric KL divergence.
+
+**3. RAM: Region Affinity Matching**
+
+RAM answers the question: How are the parts arranged?
+
+It preserves geometric relationships between different image regions.
+
+The Layer 3 feature map is pooled into a 6 × 6 grid. Pairwise cosine-distance affinity matrices are computed between all region vectors and matched across views.
